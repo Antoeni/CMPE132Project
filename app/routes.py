@@ -11,8 +11,8 @@ def create_db():
     db.create_all()
 
 @myapp_obj.route("/")
-def landing():
-    return render_template('landing.html')
+def home_page():
+    return render_template('home_page.html')
 
 @myapp_obj.route('/login/', methods=['GET', 'POST'])
 def login():
