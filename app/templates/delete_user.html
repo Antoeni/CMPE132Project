@@ -1,0 +1,131 @@
+{% extends "base.html"%}
+
+{% block content %}
+
+<style>
+   body {
+    font-family: "Lato", sans-serif;
+}
+
+
+
+.main-head{
+    height: 150px;
+    background: #ffffff9c;
+
+}
+
+.sidenav {
+    height: 100%;
+    background-color: #302f2fbc;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+
+.main {
+    padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+}
+
+@media screen and (max-width: 450px) {
+    .login-form{
+        margin-top: 10%;
+    }
+
+    .register-form{
+        margin-top: 10%;
+    }
+}
+
+@media screen and (min-width: 768px){
+    .main{
+        margin-left: 40%;
+    }
+
+
+   .sidenav{
+        width: 40%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+    }
+
+    .login-form{
+        margin-top: 80%;
+    }
+
+    .register-form{
+        margin-top: 20%;
+    }
+}
+
+
+.login-main-text{
+    margin-top: 20%;
+    padding: 60px;
+    color: #ffffff;
+}
+
+.login-main-text h2{
+    font-weight: 300;
+}
+
+.btn-black{
+    background-color: #000000 !important;
+    color: #ffffff;
+}
+</style>
+<div class="sidenav">
+         <div class="login-main-text">
+            <h2>Welcome to My Library<br> Delete User </h2>
+            <p>Type username to delete user</p>
+	    <p>Deleted users can be found on the Deleted User database</p>
+	    <p>In the mean time, deleted user is removed from the User database</p>
+         </div>
+      </div>
+      <div class="main">
+         <div class="col-md-6 col-sm-12">
+            <div class="login-form">
+               <form action="/delete/" method="POST" novalidate>
+                  {{form.hidden_tag()}}
+                  <div class="form-group">
+                     <label>User Name</label>
+                     {{form.username_del(type="text", class="form-control", placeholder="User Name")}}
+                     <label>Admin Username</label>
+		     {{form.admin_cred(type="text", class="form-control", placeholder="Admin Username")}}
+                     <label>Reason for Deletion</label>
+		     {{form.reason_del(type="text", class="form-control", placeholder="Reason")}}
+                     <!-- <input type="text" class="form-control" placeholder="User Name"> -->
+                  </div>
+                  {{form.submit(type="submit", class="btn btn-black")}}
+                  <!-- <button type="submit" class="btn btn-black">Login</button> -->
+                  <a href="{{ url_for('home_admin') }}" class="btn btn-secondary">Home</a>
+               </form>
+            </div>
+         </div>
+      </div>
+{% endblock %}
+
+<!-- <h1>Sign Up</h1>
+<form action="/sign_up/" method="POST" novalidate>
+    {{form.hidden_tag()}}
+    <p> {{form.username.label}} <br>
+       {{form.username(size=32)}}</p>
+
+    <p> {{form.password.label}} <br>
+       {{form.password(size=32)}}</p>
+
+    <p> {{form.permission.label}} <br>
+       {{form.permission(size=32)}}</p>
+
+    <p> {{form.phone_number.label}} <br>
+       {{form.phone_number()}}
+
+    <p>{{form.submit()}}</p>
+    <a href="{{url_for('login')}}">Login</a>
+</form> -->
