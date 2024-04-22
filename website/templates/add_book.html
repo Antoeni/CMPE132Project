@@ -80,30 +80,22 @@
     color: #ffffff;
 }
 </style>
-<div class="sidenav">
-         <div class="login-main-text">
-            <h2>Welcome to Library<br> Add Books </h2>
-            <p>Add books to the database</p>
-         </div>
-      </div>
       <div class="main">
          <div class="col-md-6 col-sm-12">
             <div class="login-form">
-               <form action="/modify_books/" method="POST" novalidate>
+               <form action="/add_books/" method="POST" novalidate>
                   {{form.hidden_tag()}}
                   <div class="form-group">
                      <label>Book Name</label>
                      {{form.book_name(type="text", class="form-control", placeholder="Book Name")}}
-                     <label>Book Genere</label>
-                     {{form.book_genere(type="text", class="form-control", placeholder="Book Genere")}}
+                     <label>Book Genre</label>
+                     {{form.book_genere(type="text", class="form-control", placeholder="Book Genre")}}
                      <label>Book Availiability</label>
                      {{form.book_available(type="bool", class="form-control", placeholder="Book Available")}}
 
-                     <!-- <input type="text" class="form-control" placeholder="User Name"> -->
                   </div>
                   {{form.submit(type="submit", class="btn btn-black")}}
-                  <!-- <button type="submit" class="btn btn-black">Login</button> -->
-                  <a href="{{ url_for('home_lib') }}" class="btn btn-secondary">Home</a>
+                  <a href="{{ url_for('home_lib') }}" class="btn btn-secondary">Back</a>
                </form>
             </div>
          </div>

@@ -124,18 +124,18 @@ def checkout_book():
     else:
         flash('invalid input')
     books = Book_data.query.all()
-    return render_template('book_list.html', form=form, books=books)
+    return render_template('checkout_books.html', form=form, books=books)
 
-@myapp_obj.route('/modify_books/', methods=['GET', 'POST'])
+@myapp_obj.route('/add_books/', methods=['GET', 'POST'])
 @login_required
-def modify_books():
+def add_books():
     form = add_books_to_library()
     if form.validate_on_submit():
         book_info = Book_data(book_ttl=form.book_name.data, book_gere=form.book_genere.data, book_aval=form.book_available.data)
         db.session.add(book_info)
         db.session.commit()
         flash('Book added', 'success')
-        return redirect(url_for('modify_books'))
+        return redirect(url_for('add_books'))
     return render_template('add_book.html', form=form)
 
 @myapp_obj.route('/books/', methods=['POST', 'GET'])
@@ -143,8 +143,8 @@ def books():
     books = Book_data.query.all()
     return render_template('browse.html', books=books)
 
-@myapp_obj.route('/books_lib/', methods=['POST', 'GET'])
-def books_lib():
+@myapp_obj.route('/library_books/', methods=['POST', 'GET'])
+def library_books():
     books = Book_data.query.all()
     return render_template('book_lib.html', books=books)
 
