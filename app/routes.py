@@ -28,12 +28,12 @@ def login():
                 elif site_user.role == 'librarian':
                     return redirect('/home_librarian/')
                 else:
-                    return redirect('/home/')
+                    return redirect('/general_home/')
             else:
                 flash("Username or Password is incorrect. Register for account if needed.")
                 return render_template('login.html', form=form)
         if form.guest.data:
-            return redirect('/home_guest/')
+            return redirect('/browse/')
     return render_template('login.html', form=form)
 
 @myapp_obj.route('/logout/')
@@ -59,17 +59,17 @@ def register():
             if user.role == 'admin':
                 return redirect('/home_admin/')
             elif user.role == 'user':
-                return redirect('/home/')
+                return redirect('/general_home/')
             elif user.role == 'librarian':
                 return redirect('/home_librarian/')
             elif user.role =='choose':
                 flash("Select a role.")
     return render_template('signup.html', form=form)
 
-@myapp_obj.route('/home/', methods=['POST', 'GET'])
+@myapp_obj.route('/general_home/', methods=['POST', 'GET'])
 @login_required
 def home():
-    return render_template('home.html', user=current_user)
+    return render_template('general_home.html', user=current_user)
 
 @myapp_obj.route('/home_admin/', methods=['POST', 'GET'])
 @login_required
@@ -81,10 +81,10 @@ def home_admin():
 def home_lib():
     return render_template('home_librarian.html', user=current_user)
 
-@myapp_obj.route('/home_guest/', methods=['POST', 'GET'])
-def home_guest():
+@myapp_obj.route('/browse/', methods=['POST', 'GET'])
+def browse():
     books = Book_data.query.all()
-    return render_template('home_guest.html', user=current_user, books=books)
+    return render_template('browse.html', user=current_user, books=books)
     
 @myapp_obj.route('/delete/', methods=['POST', 'GET'])
 @login_required
@@ -115,7 +115,7 @@ def checkout_book():
         book_title = Book_data.query.filter_by(book_ttl=form.book_title.data).first()
         print(book_title)
         if book_title == None:
-            flash("Book not ound.")
+            flash("Book not found.")
         else:
             checkout = Rent_books(username=current_user.username, bookname=book_title.book_ttl, returndate=datetime.now()+timedelta(days=7))
             db.session.add(checkout)
@@ -141,7 +141,7 @@ def modify_books():
 @myapp_obj.route('/books/', methods=['POST', 'GET'])
 def books():
     books = Book_data.query.all()
-    return render_template('home_guest.html', books=books)
+    return render_template('browse.html', books=books)
 
 @myapp_obj.route('/books_lib/', methods=['POST', 'GET'])
 def books_lib():
