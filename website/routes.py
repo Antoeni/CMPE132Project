@@ -1,10 +1,10 @@
 import requests
-from app.features.models import User, Rent_books, Book_data, Delete_user
-from app.features.forms import login_form, sign_up_form, delete_user_form, checkout_book_form, add_books_to_library
+from website.settings.models import User, Rent_books, Book_data, Delete_user
+from website.settings.forms import login_form, sign_up_form, delete_user_form, checkout_book_form, add_books_to_library
 from flask import  flash, redirect, render_template, url_for
 from flask_login import login_user, logout_user,  current_user, login_required
 from datetime import datetime, timedelta
-from app import myapp_obj, db
+from website import myapp_obj, db
 
 @myapp_obj.before_request
 def create_db():
