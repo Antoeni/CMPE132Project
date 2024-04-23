@@ -2,8 +2,8 @@
 
 
 # Dependencies to install
-pip install flask
-pip install flask_sqlalchemy
-pip install flask_wtf
-pip install flask_login
-pip install google-auth-oauthlib
+pip install flask <br />
+pip install flask_sqlalchemy <br />
+pip install flask_wtf <br />
+pip install flask_login <br />
+pip install google-auth-oauthlib <br />
