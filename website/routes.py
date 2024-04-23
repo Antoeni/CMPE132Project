@@ -1,20 +1,16 @@
-import requests
-from website.settings.roles import User, delete_roles, checkout_books_role, data_book
-from website.settings.forms import login_form, sign_up_form, delete_user_form, checkout_book_form, add_books_form
-from website import myapp_obj, db
-from flask import flash, url_for, render_template, redirect
-from flask_login import login_user, logout_user, login_required, current_user
 from datetime import datetime
+from website.settings.roles import User, delete_roles, checkout_books_role, data_book
+from website.settings.forms import login_page, sign_up, delete_user_page, checkout_book_page, add_books_form
+from website import myapp_obj, db
+from flask_login import login_user, logout_user, login_required, current_user
+from flask import flash, url_for, render_template, redirect
+
 
 
 #sets up the database
 @myapp_obj.before_request
 def create_db():
     db.create_all()
-#creates the routing to the home page
-@myapp_obj.route("/")
-def home_page():
-    return render_template('home_page.html')
 
 #this routes the log out, which it will send it back to home
 @myapp_obj.route('/logout/')
@@ -27,7 +23,7 @@ def logout():
 @myapp_obj.route('/login/', methods=['GET', 'POST'])
 def login():
     logout_user()
-    form = login_form()
+    form = login_page()
     if form.validate_on_submit():
         if form.submit.data:
             user_login = User.query.filter_by(username=form.username.data).first()
@@ -42,46 +38,11 @@ def login():
             else:
                 flash("Username or Password is incorrect.")
                 return render_template('login.html', form=form)
-        if form.guest.data:
-            return redirect('/browse/')
     return render_template('login.html', form=form)
-
-#this gives the overall routing for when we register
-@myapp_obj.route('/register/', methods=['POST', 'GET'])
-def register():
-    logout_user()
-    form = sign_up_form()
-    if form.validate_on_submit():
-        existing_user = User.query.filter_by(username=form.username.data).first()
-        if existing_user:
-            flash("Username already exists.")
-        else:
-            user = User(username=form.username.data, password=form.password.data, role=form.role.data)
-            user.set_password(form.password.data)
-            db.session.add(user)
-            db.session.commit()
-            login_user(user)
-            if user.role == 'admin':
-                return redirect('/home_admin/')
-            elif user.role == 'user':
-                return redirect('/general_home/')
-            elif user.role == 'librarian':
-                return redirect('/home_librarian/')
-            elif user.role =='choose':
-                flash("Choose a role.")
-    return render_template('signup.html', form=form)
-
-#Gives the routing for the general users and students
-@myapp_obj.route('/general_home/', methods=['POST', 'GET'])
-@login_required
-def home():
-    return render_template('general_home.html', user=current_user)
-
-#This routes the check outs, which we are going to check the query, then delete it after checking out
 @myapp_obj.route('/checkout/', methods=['GET', 'POST'])
 @login_required
 def checkout_book():
-    form = checkout_book_form()
+    form = checkout_book_page()
     if form.validate_on_submit():
         book_ttl = data_book.query.filter_by(book_title=form.book_checkout.data).first()
         if book_ttl is None:
@@ -120,7 +81,7 @@ def admin_database():
 @myapp_obj.route('/delete/', methods=['POST', 'GET'])
 @login_required
 def delete_user():
-    form = delete_user_form()
+    form = delete_user_page()
     if form.validate_on_submit():
         deleted_user = User.query.filter_by(username=form.deleted_username.data).first()
         if deleted_user:
@@ -165,3 +126,38 @@ def books():
     books = data_book.query.all()
     return render_template('browse.html', books=books)
 
+#this gives the overall routing for when we register
+@myapp_obj.route('/register/', methods=['POST', 'GET'])
+def register():
+    logout_user()
+    form = sign_up()
+    if form.validate_on_submit():
+        existing_user = User.query.filter_by(username=form.username.data).first()
+        if existing_user:
+            flash("Username already exists.")
+        else:
+            user = User(username=form.username.data, password=form.password.data, role=form.role.data)
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
+            if user.role == 'admin':
+                return redirect('/home_admin/')
+            elif user.role == 'user':
+                return redirect('/general_home/')
+            elif user.role == 'librarian':
+                return redirect('/home_librarian/')
+            elif user.role =='choose':
+                flash("Choose a role.")
+    return render_template('signup.html', form=form)
+
+#Gives the routing for the general users and students
+@myapp_obj.route('/general_home/', methods=['POST', 'GET'])
+@login_required
+def home():
+    return render_template('general_home.html', user=current_user)
+
+#creates the routing to the home page
+@myapp_obj.route("/")
+def home_page():
+    return render_template('home_page.html')
