@@ -27,7 +27,7 @@ class sign_up(FlaskForm):
         validators=[DataRequired()],
         choices=[
             ('choose', 'Choose...'),
-            ('user', 'Student/General'),
+            ('student/general', 'Student/General'),
             ('librarian', 'Librarian'),
             ('admin', 'Admin'),
         ],

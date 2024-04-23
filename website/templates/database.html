@@ -1,6 +1,115 @@
 {% extends "base.html"%}
 
 {% block content %}
+
+
+    <style>
+       body {
+        font-family: "Lato", sans-serif;
+    }
+
+
+
+    .main-head{
+        height: 150px;
+        background: #ffffff9c;
+
+    }
+
+    .sidenav {
+        height: 100%;
+        background-color: #302f2fbc;
+        overflow-x: hidden;
+        padding-top: 20px;
+    }
+
+
+    .main {
+        padding: 0px 10px;
+    }
+
+    @media screen and (max-height: 450px) {
+        .sidenav {padding-top: 15px;}
+    }
+
+    @media screen and (max-width: 450px) {
+        .login-form{
+            margin-top: 10%;
+        }
+
+        .register-form{
+            margin-top: 10%;
+        }
+    }
+
+    @media screen and (min-width: 768px){
+        .main{
+            margin-left: 40%;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .availability {
+            color: #4CAF50;
+        }
+
+        .unavailability {
+            color: #FF0000;
+        }
+
+       .sidenav{
+            width: 40%;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+        }
+
+        .login-form{
+            margin-top: 80%;
+        }
+
+        .register-form{
+            margin-top: 20%;
+        }
+    }
+
+    .login-main-text{
+        margin-top: 20%;
+        padding: 60px;
+        color: #ffffff;
+    }
+
+    .login-main-text h2{
+        font-weight: 300;
+    }
+
+    .btn-black{
+        background-color: #000000 !important;
+        color: #ffffff;
+    }
+
+    </style>
+
+
+
 <html lang="en" data-bs-theme="auto">
   <head><script src="../assets/js/color-modes.js"></script>
 
@@ -153,9 +262,7 @@
 </svg>
 
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Company name</a>
  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="#">Welcome {{user.username}}</a>
       </nav>
 
   <div id="navbarSearch" class="navbar-search w-100 collapse">
@@ -176,25 +283,10 @@
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
                 <svg class="bi"><use xlink:href="#house-fill"/></svg>
-                <a class="btn btn-black" href="{{url_for('home_page')}}" role="button"> Home <span class="sr-only">(current)</span></a>
+                <a class="btn btn-black" href="{{url_for('home_page')}}" role="button"> Home</a>
               </a>
             </li>
-
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <svg class="bi"><use xlink:href="#people"/></svg>
-                <a class="btn btn-black" href="{{url_for('admin_database')}}" role="button">View Database</a>
-              </a>
-            </li>
-          </ul>
-
           <ul class="nav flex-column mb-auto">
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
-                <a class="btn btn-black" href="{{url_for('delete_user')}}" role="button">Delete</a>
-              </a>
-            </li>
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2" href="#">
                 <svg class="bi"><use xlink:href="#door-closed"/></svg>
@@ -208,14 +300,74 @@
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Admin Dashboard</h1>
+        <h1 class="h2">Database</h1>
+          	    <a href="{{ url_for('home_admin') }}" class="btn btn-secondary">Back</a>
       </div>
-
+         <div class="col-md-6 col-sm-12">
+	     <table border="1">
+              <thead>
+                    <tr>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for login in login_info %}
+                <tr>
+                    <td>{{ login.username }}</td>
+                    <td>{{ login.password }}</td>
+                    <td>{{ login.role }}</td>
+                </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+	     <table border="1">
+        <div class="col-md-6 col-sm-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Deleted users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for delete in deletes %}
+                    <tr>
+                        <td>{{ delete.deleted_user }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+            </table>
+	     <table border="1">
+              <div class="main">
+        <div class="col-md-6 col-sm-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Book Name</th>
+                        <th>Genre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.book_title }}</td>
+                        <td>{{ book.book_genre }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+            </div>
+         </div>
+      </div>
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <div class = "row">
-        <p class="h2">This is the admin page, On the left side are you are given 4 options. There is home to go to the home page, there is an option to view the database,
-          there is an option to delete users, and there is an option to log out.
-        </p>
+
           </div>
 
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
@@ -233,5 +385,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 
-  </body>
+
 {% endblock %}
+

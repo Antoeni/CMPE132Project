@@ -33,11 +33,10 @@ def login():
                     return redirect('/home_admin/')
                 elif user_login.role == 'librarian':
                     return redirect('/home_librarian/')
-                else:
+                elif user_login.role == 'student/general':
                     return redirect('/general_home/')
             else:
                 flash("Username or Password is incorrect.")
-                return render_template('login.html', form=form)
     return render_template('login.html', form=form)
 @myapp_obj.route('/checkout/', methods=['GET', 'POST'])
 @login_required
@@ -55,7 +54,7 @@ def checkout_book():
             flash("Book checked out.")
             return redirect('/checkout/')
     books = data_book.query.all()
-    return render_template('checkout_books.html', form=form, books=books)
+    return render_template('checkout_books_page.html', form=form, books=books)
 
 #this gives the routing for the browse page, which we query the books
 @myapp_obj.route('/browse/', methods=['POST', 'GET'])
@@ -66,16 +65,16 @@ def browse():
 @myapp_obj.route('/home_admin/', methods=['POST', 'GET'])
 @login_required
 def home_admin():
-    return render_template('home_admin.html', user=current_user)
+    return render_template('admin_page.html', user=current_user)
 
 #This routes to the admin database, which we can see the user logins, the books, and the deleted users.
-@myapp_obj.route('/admin_database', methods=['POST', 'GET'])
+@myapp_obj.route('/admin_database/', methods=['POST', 'GET'])
 @login_required
 def admin_database():
     login_info = User.query.all()
     books = data_book.query.all()
     delete = delete_roles.query.all()
-    return render_template('admin_database.html', login_info=login_info, books=books, deletes=delete)
+    return render_template('database.html', login_info=login_info, books=books, deletes=delete)
 
 #This routes to the delete page, where we are going to check for the user, then we are going to delete them
 @myapp_obj.route('/delete/', methods=['POST', 'GET'])
@@ -85,7 +84,7 @@ def delete_user():
     if form.validate_on_submit():
         deleted_user = User.query.filter_by(username=form.deleted_username.data).first()
         if deleted_user:
-            user_delete = delete_roles(admin_username=current_user.username, deleted_user=deleted_user.username, delete_time=datetime.now(), admin_id=current_user.id, user_id=deleted_user.id)
+            user_delete = delete_roles(admin_username=current_user.username, deleted_user=deleted_user.username, admin_id=current_user.id, user_id=deleted_user.id)
             db.session.add(user_delete)
             db.session.delete(deleted_user)
             db.session.commit()
@@ -93,13 +92,13 @@ def delete_user():
             return redirect('/delete/')
         else:
             flash("Username does not exist.")
-    return render_template('delete_user.html', form=form)
+    return render_template('delete_user_page.html', form=form)
 
 #Gives the routing for the librarians and their commands
 @myapp_obj.route('/home_librarian/', methods=['POST', 'GET'])
 @login_required
 def home_librarian():
-    return render_template('home_librarian.html', user=current_user)
+    return render_template('librarian_page.html', user=current_user)
 
 #this gives the librarian view of the database
 @myapp_obj.route('/library_books/', methods=['POST', 'GET'])
@@ -117,14 +116,7 @@ def add_books_route():
         db.session.add(book_info)
         db.session.commit()
         flash('Book added', 'success')
-        return redirect(url_for('add_books_route'))
     return render_template('add_book.html', form=form)
-
-#this gives the browsing page for all users
-@myapp_obj.route('/books/', methods=['POST', 'GET'])
-def books():
-    books = data_book.query.all()
-    return render_template('browse.html', books=books)
 
 #this gives the overall routing for when we register
 @myapp_obj.route('/register/', methods=['POST', 'GET'])
@@ -140,10 +132,11 @@ def register():
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
+
             login_user(user)
             if user.role == 'admin':
                 return redirect('/home_admin/')
-            elif user.role == 'user':
+            elif user.role == 'student/general':
                 return redirect('/general_home/')
             elif user.role == 'librarian':
                 return redirect('/home_librarian/')
