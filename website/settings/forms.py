@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,  HiddenField, SelectField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, SelectField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 
 
@@ -26,7 +26,6 @@ class sign_up_form(FlaskForm):
     submit = SubmitField('Register')
 
 class checkout_book_form(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
     book_checkout = StringField('Book Title', validators=[DataRequired()])
     submit = SubmitField('Checkout')
 
@@ -37,5 +36,4 @@ class add_books_form(FlaskForm):
 
 class delete_user_form(FlaskForm):
     deleted_username = StringField('Username', validators=[DataRequired()])
-    admin_info = StringField('Admin Username', validators=[DataRequired()])
     submit = SubmitField('Delete')

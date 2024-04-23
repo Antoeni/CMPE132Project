@@ -1,10 +1,10 @@
 import requests
-from website.settings.roles import User, Delete_user, checkout_books_role, data_book
+from website.settings.roles import User, delete_roles, checkout_books_role, data_book
 from website.settings.forms import login_form, sign_up_form, delete_user_form, checkout_book_form, add_books_form
 from website import myapp_obj, db
 from flask import flash, url_for, render_template, redirect
 from flask_login import login_user, logout_user, login_required, current_user
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 #sets up the database
@@ -79,19 +79,19 @@ def home():
 def checkout_book():
     form = checkout_book_form()
     if form.validate_on_submit():
-        user_id = current_user.id
         book_ttl = data_book.query.filter_by(book_title=form.book_checkout.data).first()
         if book_ttl is None:
             flash("Book not found.")
         else:
-            checkout = checkout_books_role(username=current_user.username, bookname=book_ttl.book_title)
+            checkout = checkout_books_role(bookname=book_ttl.book_title)
             db.session.add(checkout)
             db.session.delete(book_ttl)
             db.session.commit()
-    else:
-        flash('invalid input')
+            flash("Book checked out successfully.")
+            return redirect('/checkout/')
     books = data_book.query.all()
     return render_template('checkout_books.html', form=form, books=books)
+
 
 
 @myapp_obj.route('/browse/', methods=['POST', 'GET'])
@@ -108,7 +108,7 @@ def home_admin():
 def admin_database():
     login_info = User.query.all()
     books = data_book.query.all()
-    delete = Delete_user.query.all()
+    delete = delete_roles.query.all()
     return render_template('admin_database.html', login_info=login_info, books=books, deletes=delete)
 
 @myapp_obj.route('/delete/', methods=['POST', 'GET'])
@@ -116,20 +116,18 @@ def admin_database():
 def delete_user():
     form = delete_user_form()
     if form.validate_on_submit():
-        if form.admin_info.data == current_user.username:
-            deleted_user = User.query.filter_by(username=form.deleted_username.data).first()
-            if deleted_user:
-                user_delete = Delete_user(admin_username=current_user.username, deleted_user=deleted_user.username, delete_time=datetime.now(), admin_id=current_user.id, user_id=deleted_user.id)
-                db.session.add(user_delete)
-                db.session.delete(deleted_user)
-                db.session.commit()
-                flash("User has been deleted.")
-                return redirect('/delete/')
-            else:
-                flash("Username does not exist.")
+        deleted_user = User.query.filter_by(username=form.deleted_username.data).first()
+        if deleted_user:
+            user_delete = delete_roles(admin_username=current_user.username, deleted_user=deleted_user.username, delete_time=datetime.now(), admin_id=current_user.id, user_id=deleted_user.id)
+            db.session.add(user_delete)
+            db.session.delete(deleted_user)
+            db.session.commit()
+            flash("User has been deleted.")
+            return redirect('/delete/')
         else:
-            flash("Admin Login Incorrect.")
+            flash("Username does not exist.")
     return render_template('delete_user.html', form=form)
+
 #Gives the routing for the librarians and their commands
 @myapp_obj.route('/home_librarian/', methods=['POST', 'GET'])
 @login_required

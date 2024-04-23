@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 #Delete user:
-class Delete_user(db.Model):
+class delete_roles(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     admin_username = db.Column(db.String(20), nullable=False)
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -21,7 +21,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(20), nullable=False)
     role = db.Column(db.String(20), nullable=False)
-    deleted = db.relationship('Delete_user', backref='admin_user', foreign_keys='Delete_user.admin_id')
+    deleted = db.relationship('delete_roles', backref='admin_user', foreign_keys='delete_roles.admin_id')
     def check_password(self, password):
         return check_password_hash(self.password, password)
     def set_password(self, password):
@@ -29,7 +29,7 @@ class User(db.Model, UserMixin):
 
 #Book Checkout Information
 class checkout_books_role(db.Model):
-    id= db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20),nullable=True)
     bookname = db.Column(db.String(20), nullable=True)
 

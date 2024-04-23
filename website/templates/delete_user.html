@@ -110,10 +110,7 @@
                   <div class="form-group">
                      <label>Username</label>
                      {{form.deleted_username(type="text", class="form-control", placeholder="Username")}}
-                     <label>Admin Username</label>
-		            {{form.admin_info(type="text", class="form-control", placeholder="Admin Username")}}
-                    </div>
-                    {{form.submit(type="submit", class="btn btn-black")}}
+                   {{form.submit(type="submit", class="btn btn-black")}}
                   <a href="{{ url_for('home_admin') }}" class="btn btn-secondary">Back</a>
                </form>
             </div>
