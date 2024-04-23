@@ -20,7 +20,6 @@ class sign_up_form(FlaskForm):
             ('librarian', 'Librarian'),
             ('admin', 'Admin'),
         ],
-        # Set the default value here or remove it to have no default value
         default='student'
     )
     submit = SubmitField('Register')

@@ -16,6 +16,14 @@ def create_db():
 def home_page():
     return render_template('home_page.html')
 
+#this routes the log out, which it will send it back to home
+@myapp_obj.route('/logout/')
+def logout():
+    logout_user()
+    flash("Logged out.")
+    return redirect('/')
+
+#This routes the login page, which we are able to check if it is an admin, librarian, or general user
 @myapp_obj.route('/login/', methods=['GET', 'POST'])
 def login():
     logout_user()
@@ -38,12 +46,7 @@ def login():
             return redirect('/browse/')
     return render_template('login.html', form=form)
 
-@myapp_obj.route('/logout/')
-def logout():
-    logout_user()
-    flash("Logged out.")
-    return redirect('/')
-
+#this gives the overall routing for when we register
 @myapp_obj.route('/register/', methods=['POST', 'GET'])
 def register():
     logout_user()
@@ -74,6 +77,7 @@ def register():
 def home():
     return render_template('general_home.html', user=current_user)
 
+#This routes the check outs, which we are going to check the query, then delete it after checking out
 @myapp_obj.route('/checkout/', methods=['GET', 'POST'])
 @login_required
 def checkout_book():
@@ -87,13 +91,12 @@ def checkout_book():
             db.session.add(checkout)
             db.session.delete(book_ttl)
             db.session.commit()
-            flash("Book checked out successfully.")
+            flash("Book checked out.")
             return redirect('/checkout/')
     books = data_book.query.all()
     return render_template('checkout_books.html', form=form, books=books)
 
-
-
+#this gives the routing for the browse page, which we query the books
 @myapp_obj.route('/browse/', methods=['POST', 'GET'])
 def browse():
     books = data_book.query.all()
@@ -103,6 +106,8 @@ def browse():
 @login_required
 def home_admin():
     return render_template('home_admin.html', user=current_user)
+
+#This routes to the admin database, which we can see the user logins, the books, and the deleted users.
 @myapp_obj.route('/admin_database', methods=['POST', 'GET'])
 @login_required
 def admin_database():
@@ -111,6 +116,7 @@ def admin_database():
     delete = delete_roles.query.all()
     return render_template('admin_database.html', login_info=login_info, books=books, deletes=delete)
 
+#This routes to the delete page, where we are going to check for the user, then we are going to delete them
 @myapp_obj.route('/delete/', methods=['POST', 'GET'])
 @login_required
 def delete_user():
@@ -134,11 +140,13 @@ def delete_user():
 def home_librarian():
     return render_template('home_librarian.html', user=current_user)
 
+#this gives the librarian view of the database
 @myapp_obj.route('/library_books/', methods=['POST', 'GET'])
 def library_books():
     books = data_book.query.all()
     return render_template('librarian_view.html', books=books)
 
+#this adds in tn the books, which we are looking for the book name and genre
 @myapp_obj.route('/add_books/', methods=['GET', 'POST'])
 @login_required
 def add_books_route():
@@ -151,6 +159,7 @@ def add_books_route():
         return redirect(url_for('add_books_route'))
     return render_template('add_book.html', form=form)
 
+#this gives the browsing page for all users
 @myapp_obj.route('/books/', methods=['POST', 'GET'])
 def books():
     books = data_book.query.all()
