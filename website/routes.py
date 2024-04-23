@@ -31,7 +31,7 @@ def login():
                 else:
                     return redirect('/general_home/')
             else:
-                flash("Username or Password is incorrect. Register for account if needed.")
+                flash("Username or Password is incorrect.")
                 return render_template('login.html', form=form)
         if form.guest.data:
             return redirect('/browse/')
@@ -128,7 +128,7 @@ def delete_user():
             else:
                 flash("Username does not exist.")
         else:
-            flash("Admin credential incorrect.")
+            flash("Admin Login Incorrect.")
     return render_template('delete_user.html', form=form)
 #Gives the routing for the librarians and their commands
 @myapp_obj.route('/home_librarian/', methods=['POST', 'GET'])
