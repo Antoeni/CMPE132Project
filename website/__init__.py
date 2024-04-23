@@ -3,9 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
-
 myapp_obj = Flask(__name__)
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 myapp_obj.config.from_mapping(
