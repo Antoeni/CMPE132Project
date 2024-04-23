@@ -117,7 +117,7 @@ def delete_user():
     form = delete_user_form()
     if form.validate_on_submit():
         if form.admin_info.data == current_user.username:
-            deleted_user = User.query.filter_by(username=form.username_del.data).first()
+            deleted_user = User.query.filter_by(username=form.deleted_username.data).first()
             if deleted_user:
                 user_delete = Delete_user(admin_username=current_user.username, deleted_user=deleted_user.username, delete_time=datetime.now(), admin_id=current_user.id, user_id=deleted_user.id)
                 db.session.add(user_delete)

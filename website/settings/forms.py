@@ -6,7 +6,6 @@ from wtforms.validators import DataRequired
 class login_form(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
 class sign_up_form(FlaskForm):
@@ -37,6 +36,6 @@ class add_books_form(FlaskForm):
     submit = SubmitField('Add')
 
 class delete_user_form(FlaskForm):
-    username_del = StringField('Username', validators=[DataRequired()])
+    deleted_username = StringField('Username', validators=[DataRequired()])
     admin_info = StringField('Admin Username', validators=[DataRequired()])
     submit = SubmitField('Delete')
