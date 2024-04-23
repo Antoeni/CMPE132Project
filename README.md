@@ -1,7 +1,7 @@
 # CMPE132Project
 
 
-#Dependencies to install
+# Dependencies to install
 pip install flask
 pip install flask_sqlalchemy
 pip install flask_wtf
