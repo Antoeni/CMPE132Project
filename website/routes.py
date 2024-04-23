@@ -113,8 +113,8 @@ def library_books():
 def add_books_route():
     form = add_books_form()
     if form.validate_on_submit():
-        book_info = data_book(book_title=form.book_name_add.data, book_genre=form.book_genre_add.data)
-        db.session.add(book_info)
+        book = data_book(book_title=form.book_name_add.data, book_genre=form.book_genre_add.data)
+        db.session.add(book)
         db.session.commit()
         flash('Book added', 'success')
     return render_template('add_book.html', form=form)
