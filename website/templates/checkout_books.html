@@ -114,16 +114,13 @@
                  <tr>
                   <th>Book Name</th>
                   <th>Genre</th>
-                  <th>Availability</th>
                 </tr>
               </thead>
              <tbody>
             {% for book in books %}
                 <tr>
-                    <td>{{ book.book_ttl }}</td>
-                    <td>{{ book.book_gere }}</td>
-                    <td>{{ "Available" if book.book_aval else "Not Available" }}</td>
-                </tr>
+                    <td>{{ book.book_title }}</td>
+                    <td>{{ book.book_genre }}</td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -133,7 +130,7 @@
                   {{form.hidden_tag()}}
                   <div class="form-group">
                      <label>Book Name</label>
-                     {{form.book_title(type="text", class="form-control", placeholder="Book Title")}}
+                     {{form.book_checkout(type="text", class="form-control", placeholder="Book Title")}}
                      <label>Username</label>
 		     {{form.username(type="text", class="form-control", placeholder="Username")}}
                   </div>
