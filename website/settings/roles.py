@@ -32,10 +32,9 @@ class checkout_books_role(db.Model):
     id= db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20),nullable=True)
     bookname = db.Column(db.String(20), nullable=True)
-    returndate = db.Column(db.DateTime, nullable=False)
 
 #Database information
-class Book_data(db.Model):
+class data_book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     book_title = db.Column(db.String(20),nullable=False)
     book_genre = db.Column(db.String(20), nullable=False)

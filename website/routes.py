@@ -1,10 +1,11 @@
 import requests
-from website.settings.roles import User, checkout_books_role, Book_data, Delete_user
+from website.settings.roles import User, Delete_user, checkout_books_role, data_book
 from website.settings.forms import login_form, sign_up_form, delete_user_form, checkout_book_form, add_books_form
-from flask import  flash, redirect, render_template, url_for
-from flask_login import login_user, logout_user,  current_user, login_required
-from datetime import datetime, timedelta
 from website import myapp_obj, db
+from flask import flash, url_for, render_template, redirect
+from flask_login import login_user, logout_user, login_required, current_user
+from datetime import datetime, timedelta
+
 
 #sets up the database
 @myapp_obj.before_request
@@ -21,12 +22,12 @@ def login():
     form = login_form()
     if form.validate_on_submit():
         if form.submit.data:
-            site_user = User.query.filter_by(username=form.username.data).first()
-            if site_user and site_user.check_password(form.password.data):
-                login_user(site_user)
-                if site_user.role == 'admin':
+            user_login = User.query.filter_by(username=form.username.data).first()
+            if user_login and user_login.check_password(form.password.data):
+                login_user(user_login)
+                if user_login.role == 'admin':
                     return redirect('/home_admin/')
-                elif site_user.role == 'librarian':
+                elif user_login.role == 'librarian':
                     return redirect('/home_librarian/')
                 else:
                     return redirect('/general_home/')
@@ -79,24 +80,23 @@ def checkout_book():
     form = checkout_book_form()
     if form.validate_on_submit():
         user_id = current_user.id
-        book_ttl = Book_data.query.filter_by(book_ttl=form.book_checkout.data).first()
-        print(book_ttl)
+        book_ttl = data_book.query.filter_by(book_title=form.book_checkout.data).first()
         if book_ttl is None:
             flash("Book not found.")
         else:
-            checkout = checkout_books_role(username=current_user.username, bookname=book_ttl.book_title, returndate=datetime.now() + timedelta(days=7))
+            checkout = checkout_books_role(username=current_user.username, bookname=book_ttl.book_title, )
             db.session.add(checkout)
             db.session.delete(book_ttl)
             db.session.commit()
     else:
         flash('invalid input')
-    books = Book_data.query.all()
+    books = data_book.query.all()
     return render_template('checkout_books.html', form=form, books=books)
 
 
 @myapp_obj.route('/browse/', methods=['POST', 'GET'])
 def browse():
-    books = Book_data.query.all()
+    books = data_book.query.all()
     return render_template('browse.html', user=current_user, books=books)
 #Gives the routing for the admins and their pages
 @myapp_obj.route('/home_admin/', methods=['POST', 'GET'])
@@ -107,9 +107,9 @@ def home_admin():
 @login_required
 def admin_database():
     login_info = User.query.all()
-    books = Book_data.query.all()
-    deletes = Delete_user.query.all()
-    return render_template('admin_database.html', login_info=login_info, books=books, deletes=deletes)
+    books = data_book.query.all()
+    delete = Delete_user.query.all()
+    return render_template('admin_database.html', login_info=login_info, books=books, deletes=delete)
 
 @myapp_obj.route('/delete/', methods=['POST', 'GET'])
 @login_required
@@ -117,11 +117,11 @@ def delete_user():
     form = delete_user_form()
     if form.validate_on_submit():
         if form.admin_info.data == current_user.username:
-            user_to_delete = User.query.filter_by(username=form.username_del.data).first()
-            if user_to_delete:
-                user_delete = Delete_user(admin_username=current_user.username, deleted_user=user_to_delete.username, delete_time=datetime.now(), admin_id=current_user.id, user_id=user_to_delete.id)
+            deleted_user = User.query.filter_by(username=form.username_del.data).first()
+            if deleted_user:
+                user_delete = Delete_user(admin_username=current_user.username, deleted_user=deleted_user.username, delete_time=datetime.now(), admin_id=current_user.id, user_id=deleted_user.id)
                 db.session.add(user_delete)
-                db.session.delete(user_to_delete)
+                db.session.delete(deleted_user)
                 db.session.commit()
                 flash("User has been deleted.")
                 return redirect('/delete/')
@@ -138,7 +138,7 @@ def home_librarian():
 
 @myapp_obj.route('/library_books/', methods=['POST', 'GET'])
 def library_books():
-    books = Book_data.query.all()
+    books = data_book.query.all()
     return render_template('librarian_view.html', books=books)
 
 @myapp_obj.route('/add_books/', methods=['GET', 'POST'])
@@ -146,7 +146,7 @@ def library_books():
 def add_books_route():
     form = add_books_form()
     if form.validate_on_submit():
-        book_info = Book_data(book_title=form.book_name_add.data, book_genre=form.book_genre_add.data)
+        book_info = data_book(book_title=form.book_name_add.data, book_genre=form.book_genre_add.data)
         db.session.add(book_info)
         db.session.commit()
         flash('Book added', 'success')
@@ -155,6 +155,6 @@ def add_books_route():
 
 @myapp_obj.route('/books/', methods=['POST', 'GET'])
 def books():
-    books = Book_data.query.all()
+    books = data_book.query.all()
     return render_template('browse.html', books=books)
 
