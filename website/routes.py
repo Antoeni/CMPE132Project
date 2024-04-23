@@ -3,7 +3,7 @@ from website.settings.roles import User, delete_roles, checkout_books_role, data
 from website.settings.forms import login_page, sign_up, delete_user_page, checkout_book_page, add_books_form
 from website import myapp_obj, db
 from flask_login import login_user, logout_user, login_required, current_user
-from flask import flash, url_for, render_template, redirect
+from flask import flash, render_template, redirect
 
 
 
@@ -47,8 +47,6 @@ def checkout_book():
         if book_ttl is None:
             flash("Book not found.")
         else:
-            checkout = checkout_books_role(bookname=book_ttl.book_title)
-            db.session.add(checkout)
             db.session.delete(book_ttl)
             db.session.commit()
             flash("Book checked out.")
@@ -61,6 +59,7 @@ def checkout_book():
 def browse():
     books = data_book.query.all()
     return render_template('browse.html', user=current_user, books=books)
+
 #Gives the routing for the admins and their pages
 @myapp_obj.route('/home_admin/', methods=['POST', 'GET'])
 @login_required
@@ -84,12 +83,14 @@ def delete_user():
     if form.validate_on_submit():
         deleted_user = User.query.filter_by(username=form.deleted_username.data).first()
         if deleted_user:
-            user_delete = delete_roles(admin_username=current_user.username, deleted_user=deleted_user.username, admin_id=current_user.id, user_id=deleted_user.id)
-            db.session.add(user_delete)
+            #this will delete the roles, according to the admin, which it will set their id and username when they delete the role
+            user_ToBeDeleted = delete_roles(admin_username=current_user.username,  admin_id=current_user.id, deleted_user=deleted_user.username, user_id=deleted_user.id)
+            #this will add in the deleted user into another database
+            db.session.add(user_ToBeDeleted)
+            #this will delete the user from the initial database
             db.session.delete(deleted_user)
             db.session.commit()
-            flash("User has been deleted.")
-            return redirect('/delete/')
+            flash("User deleted.")
         else:
             flash("Username does not exist.")
     return render_template('delete_user_page.html', form=form)
@@ -121,18 +122,21 @@ def add_books_route():
 #this gives the overall routing for when we register
 @myapp_obj.route('/register/', methods=['POST', 'GET'])
 def register():
+    #initially we want to log out the user, every register
     logout_user()
     form = sign_up()
     if form.validate_on_submit():
-        existing_user = User.query.filter_by(username=form.username.data).first()
-        if existing_user:
+        existing = User.query.filter_by(username=form.username.data).first()
+        if existing:
             flash("Username already exists.")
         else:
             user = User(username=form.username.data, password=form.password.data, role=form.role.data)
+            #this will set the password of the user
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
 
+            #this will check with the login manager, which type of role they chose
             login_user(user)
             if user.role == 'admin':
                 return redirect('/home_admin/')
