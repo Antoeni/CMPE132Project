@@ -28,22 +28,15 @@ class sign_up_form(FlaskForm):
 
 class checkout_book_form(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
-    book_title = StringField('Book Title', validators=[DataRequired()])
+    book_checkout = StringField('Book Title', validators=[DataRequired()])
     submit = SubmitField('Checkout')
 
-class edit_profile_form(FlaskForm):
-    new_username = StringField('Username', validators=[DataRequired()])
-    new_password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Edit')
-
-class add_books_to_library(FlaskForm):
-    book_name = StringField('Book Title', validators=[DataRequired()])
-    book_genere = StringField('Book Genere', validators=[DataRequired()])
-    book_available = BooleanField('Available')
+class add_books_form(FlaskForm):
+    book_name_add = StringField('Book Title', validators=[DataRequired()])
+    book_genre_add = StringField('Book Genre', validators=[DataRequired()])
     submit = SubmitField('Add')
 
 class delete_user_form(FlaskForm):
     username_del = StringField('Username', validators=[DataRequired()])
-    admin_cred = StringField('Admin Username', validators=[DataRequired()])
-    reason_del = TextAreaField('Reason for Deletion', validators=[DataRequired()])
+    admin_info = StringField('Admin Username', validators=[DataRequired()])
     submit = SubmitField('Delete')

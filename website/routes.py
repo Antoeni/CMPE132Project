@@ -1,6 +1,6 @@
 import requests
-from website.settings.roles import User, Rent_books, Book_data, Delete_user
-from website.settings.forms import login_form, sign_up_form, delete_user_form, checkout_book_form, add_books_to_library
+from website.settings.roles import User, checkout_books_role, Book_data, Delete_user
+from website.settings.forms import login_form, sign_up_form, delete_user_form, checkout_book_form, add_books_form
 from flask import  flash, redirect, render_template, url_for
 from flask_login import login_user, logout_user,  current_user, login_required
 from datetime import datetime, timedelta
@@ -79,19 +79,20 @@ def checkout_book():
     form = checkout_book_form()
     if form.validate_on_submit():
         user_id = current_user.id
-        book_title = Book_data.query.filter_by(book_ttl=form.book_title.data).first()
-        print(book_title)
-        if book_title == None:
+        book_ttl = Book_data.query.filter_by(book_ttl=form.book_checkout.data).first()
+        print(book_ttl)
+        if book_ttl is None:
             flash("Book not found.")
         else:
-            checkout = Rent_books(username=current_user.username, bookname=book_title.book_ttl, returndate=datetime.now()+timedelta(days=7))
+            checkout = checkout_books_role(username=current_user.username, bookname=book_ttl.book_title, returndate=datetime.now() + timedelta(days=7))
             db.session.add(checkout)
-            db.session.delete(book_title)
+            db.session.delete(book_ttl)
             db.session.commit()
     else:
         flash('invalid input')
     books = Book_data.query.all()
     return render_template('checkout_books.html', form=form, books=books)
+
 
 @myapp_obj.route('/browse/', methods=['POST', 'GET'])
 def browse():
@@ -108,15 +109,14 @@ def admin_database():
     login_info = User.query.all()
     books = Book_data.query.all()
     deletes = Delete_user.query.all()
-    rent_books = Rent_books.query.all()
-    return render_template('admin_database.html', login_info=login_info, books=books, deletes=deletes, rent_books=rent_books)
+    return render_template('admin_database.html', login_info=login_info, books=books, deletes=deletes)
 
 @myapp_obj.route('/delete/', methods=['POST', 'GET'])
 @login_required
 def delete_user():
     form = delete_user_form()
     if form.validate_on_submit():
-        if form.admin_cred.data == current_user.username:
+        if form.admin_info.data == current_user.username:
             user_to_delete = User.query.filter_by(username=form.username_del.data).first()
             if user_to_delete:
                 user_delete = Delete_user(admin_username=current_user.username, deleted_user=user_to_delete.username, delete_time=datetime.now(), admin_id=current_user.id, user_id=user_to_delete.id)
@@ -133,24 +133,24 @@ def delete_user():
 #Gives the routing for the librarians and their commands
 @myapp_obj.route('/home_librarian/', methods=['POST', 'GET'])
 @login_required
-def home_lib():
+def home_librarian():
     return render_template('home_librarian.html', user=current_user)
 
 @myapp_obj.route('/library_books/', methods=['POST', 'GET'])
 def library_books():
     books = Book_data.query.all()
-    return render_template('book_lib.html', books=books)
+    return render_template('librarian_view.html', books=books)
 
 @myapp_obj.route('/add_books/', methods=['GET', 'POST'])
 @login_required
-def add_books():
-    form = add_books_to_library()
+def add_books_route():
+    form = add_books_form()
     if form.validate_on_submit():
-        book_info = Book_data(book_ttl=form.book_name.data, book_gere=form.book_genere.data, book_aval=form.book_available.data)
+        book_info = Book_data(book_title=form.book_name_add.data, book_genre=form.book_genre_add.data)
         db.session.add(book_info)
         db.session.commit()
         flash('Book added', 'success')
-        return redirect(url_for('add_books'))
+        return redirect(url_for('add_books_route'))
     return render_template('add_book.html', form=form)
 
 @myapp_obj.route('/books/', methods=['POST', 'GET'])

@@ -21,14 +21,14 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(20), nullable=False)
-    deleted_by_admin = db.relationship('Delete_user', backref='admin_user', foreign_keys='Delete_user.admin_id')
+    deleted = db.relationship('Delete_user', backref='admin_user', foreign_keys='Delete_user.admin_id')
     def check_password(self, password):
         return check_password_hash(self.password, password)
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
 #Book Checkout Information
-class Rent_books(db.Model):
+class checkout_books_role(db.Model):
     id= db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100),nullable=True)
     bookname = db.Column(db.String(100), nullable=True)
@@ -37,9 +37,8 @@ class Rent_books(db.Model):
 #Database information
 class Book_data(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    book_ttl = db.Column(db.String(100),nullable=False)
-    book_gere = db.Column(db.String(100), nullable=False)
-    book_aval = db.Column(db.Boolean, nullable=True)
+    book_title = db.Column(db.String(100),nullable=False)
+    book_genre = db.Column(db.String(100), nullable=False)
     
 @login.user_loader
 def load_user(id):

@@ -199,7 +199,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Librarian View</h1>
     </div>
-    <a href="{{ url_for('home_lib') }}" class="btn btn-black">Back</a>
+    <a href="{{ url_for('home_librarian') }}" class="btn btn-black">Back</a>
     <div class="main">
         <div class="col-md-6 col-sm-12">
             <table class="table">
@@ -207,15 +207,13 @@
                     <tr>
                         <th>Book Name</th>
                         <th>Genre</th>
-                        <th>Availability</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for book in books %}
                     <tr>
-                        <td>{{ book.book_ttl }}</td>
-                        <td>{{ book.book_gere }}</td>
-                        <td>{{ "Available" if book.book_aval else "Not Available" }}</td>
+                        <td>{{ book.book_title }}</td>
+                        <td>{{ book.book_genre }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

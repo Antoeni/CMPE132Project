@@ -310,7 +310,7 @@
          <div class="col-md-6 col-sm-12">
 	     <table border="1">
               <thead>
-                 <tr>
+                    <tr>
                   <th>Username</th>
                   <th>Password</th>
                   <th>Role</th>
@@ -323,43 +323,52 @@
                     <td>{{ login.password }}</td>
                     <td>{{ login.role }}</td>
                 </tr>
-              {% endfor %}
-              </tbody>
+                    {% endfor %}
+                </tbody>
             </table>
 	     <table border="1">
-              <thead>
-                 <tr>
-                  <th>Deleted User</th>
-                  <th>Time Deleted</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for delete in deletes %}
-                <tr>
-                    <td>{{ delete.deleted_user }}</td>
+              <div class="main">
+        <div class="col-md-6 col-sm-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Deleted users</th>
+                        <th>Delete Times</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for delete in deletes %}
+                    <tr>
+                        <td>{{ delete.deleted_user }}</td>
                     <td>{{ delete.delete_time }}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
             </table>
 	     <table border="1">
-              <thead>
-                 <tr>
-                  <th>Book Name</th>
-                  <th>Genre</th>
-                  <th>Availability</th>
-                </tr>
-              </thead>
-              <tbody>
-              {% for book in books %}
-                <tr>
-                    <td>{{ book.book_ttl }}</td>
-                    <td>{{ book.book_gere }}</td>
-                    <td>{{ "Available" if book.book_aval else "Not Available" }}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
+              <div class="main">
+        <div class="col-md-6 col-sm-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Book Name</th>
+                        <th>Genre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.book_title }}</td>
+                        <td>{{ book.book_genre }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
+        </div>
+    </div>
             </div>
          </div>
       </div>
