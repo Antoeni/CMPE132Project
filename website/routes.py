@@ -84,7 +84,7 @@ def checkout_book():
         if book_ttl is None:
             flash("Book not found.")
         else:
-            checkout = checkout_books_role(username=current_user.username, bookname=book_ttl.book_title, )
+            checkout = checkout_books_role(username=current_user.username, bookname=book_ttl.book_title)
             db.session.add(checkout)
             db.session.delete(book_ttl)
             db.session.commit()
