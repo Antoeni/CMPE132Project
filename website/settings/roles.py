@@ -10,21 +10,22 @@ def load_user(id):
 #Delete user, this will set up the information for when we delete the user later
 class delete_roles(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    admin_username = db.Column(db.String(20), nullable=False)
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # this will create a relationship between the user's info, which the foreign key to access it is the admin
+    admin = db.relationship('User', foreign_keys=admin_id, backref='Deleted', uselist=False)
+    admin_username = db.Column(db.String(20), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     deleted_user = db.Column(db.String(20), nullable=False)
-    #this will create a relationship between the user's info, which the foreign key to access it is the admin key.
-    admin = db.relationship('User', foreign_keys=[admin_id], backref='deleted_users', uselist=False)
+
 
 #User information, this will set up the information about the user
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
+    # this will create a relationship between the deleted roles
+    deleted = db.relationship('delete_roles', backref='Admin', foreign_keys='delete_roles.admin_id', uselist=False)
+    role = db.Column(db.String(20), nullable=False)
     username = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(20), nullable=False)
-    role = db.Column(db.String(20), nullable=False)
-    #this will create a relationship between the deleted roles
-    deleted = db.relationship('delete_roles', backref='admin_user', foreign_keys='delete_roles.admin_id')
     #password hashing here
     def set_password(self, password):
         self.password = generate_password_hash(password)

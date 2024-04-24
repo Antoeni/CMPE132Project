@@ -1,4 +1,4 @@
 
-from website import myapp_obj, db
+from website import app
 if __name__ == "__main__":
-    myapp_obj.run(debug=True)
+    app.run(debug=True)

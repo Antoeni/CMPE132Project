@@ -1,26 +1,26 @@
 from datetime import datetime
 from website.settings.roles import User, delete_roles, checkout_books_role, data_book
 from website.settings.forms import login_page, sign_up, delete_user_page, checkout_book_page, add_books_form
-from website import myapp_obj, db
+from website import app, db
 from flask_login import login_user, logout_user, login_required, current_user
 from flask import flash, render_template, redirect
 
 
 
 #sets up the database
-@myapp_obj.before_request
+@app.before_request
 def create_db():
     db.create_all()
 
 #this routes the log out, which it will send it back to home
-@myapp_obj.route('/logout/')
+@app.route('/logout/')
 def logout():
     logout_user()
     flash("Logged out.")
     return redirect('/')
 
 #This routes the login page, which we are able to check if it is an admin, librarian, or general user
-@myapp_obj.route('/login/', methods=['GET', 'POST'])
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
     logout_user()
     form = login_page()
@@ -38,7 +38,7 @@ def login():
             else:
                 flash("Username or Password is incorrect.")
     return render_template('login.html', form=form)
-@myapp_obj.route('/checkout/', methods=['GET', 'POST'])
+@app.route('/checkout/', methods=['GET', 'POST'])
 @login_required
 def checkout_book():
     form = checkout_book_page()
@@ -55,19 +55,19 @@ def checkout_book():
     return render_template('checkout_books_page.html', form=form, books=books)
 
 #this gives the routing for the browse page, which we query the books
-@myapp_obj.route('/browse/', methods=['POST', 'GET'])
+@app.route('/browse/', methods=['POST', 'GET'])
 def browse():
     books = data_book.query.all()
     return render_template('browse.html', user=current_user, books=books)
 
 #Gives the routing for the admins and their pages
-@myapp_obj.route('/home_admin/', methods=['POST', 'GET'])
+@app.route('/home_admin/', methods=['POST', 'GET'])
 @login_required
 def home_admin():
     return render_template('admin_page.html', user=current_user)
 
 #This routes to the admin database, which we can see the user logins, the books, and the deleted users.
-@myapp_obj.route('/admin_database/', methods=['POST', 'GET'])
+@app.route('/admin_database/', methods=['POST', 'GET'])
 @login_required
 def admin_database():
     login_info = User.query.all()
@@ -76,7 +76,7 @@ def admin_database():
     return render_template('database.html', login_info=login_info, books=books, deletes=delete)
 
 #This routes to the delete page, where we are going to check for the user, then we are going to delete them
-@myapp_obj.route('/delete/', methods=['POST', 'GET'])
+@app.route('/delete/', methods=['POST', 'GET'])
 @login_required
 def delete_user():
     form = delete_user_page()
@@ -96,19 +96,19 @@ def delete_user():
     return render_template('delete_user_page.html', form=form)
 
 #Gives the routing for the librarians and their commands
-@myapp_obj.route('/home_librarian/', methods=['POST', 'GET'])
+@app.route('/home_librarian/', methods=['POST', 'GET'])
 @login_required
 def home_librarian():
     return render_template('librarian_page.html', user=current_user)
 
 #this gives the librarian view of the database
-@myapp_obj.route('/library_books/', methods=['POST', 'GET'])
+@app.route('/library_books/', methods=['POST', 'GET'])
 def library_books():
     books = data_book.query.all()
     return render_template('librarian_view.html', books=books)
 
 #this adds in tn the books, which we are looking for the book name and genre
-@myapp_obj.route('/add_books/', methods=['GET', 'POST'])
+@app.route('/add_books/', methods=['GET', 'POST'])
 @login_required
 def add_books_route():
     form = add_books_form()
@@ -120,7 +120,7 @@ def add_books_route():
     return render_template('add_book.html', form=form)
 
 #this gives the overall routing for when we register
-@myapp_obj.route('/register/', methods=['POST', 'GET'])
+@app.route('/register/', methods=['POST', 'GET'])
 def register():
     #initially we want to log out the user, every register
     logout_user()
@@ -149,12 +149,12 @@ def register():
     return render_template('signup.html', form=form)
 
 #Gives the routing for the general users and students
-@myapp_obj.route('/general_home/', methods=['POST', 'GET'])
+@app.route('/general_home/', methods=['POST', 'GET'])
 @login_required
 def home():
     return render_template('general_home.html', user=current_user)
 
 #creates the routing to the home page
-@myapp_obj.route("/")
+@app.route("/")
 def home_page():
     return render_template('home_page.html')
