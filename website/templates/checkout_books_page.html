@@ -109,7 +109,7 @@
       </div>
       <div class="main">
          <div class="col-md-6 col-sm-12">
-	     <table border="1">
+	     <table class="table">
               <thead>
                  <tr>
                   <th>Book Name</th>
@@ -130,7 +130,7 @@
                   {{form.hidden_tag()}}
                   <div class="form-group">
                      <label>Book Name</label>
-                     {{form.book_checkout(type="text", class="form-control", placeholder="Book Title")}}
+                     {{form.book_checkout(type="text", placeholder="Book Title")}}
                   </div>
                   {{form.submit(type="submit", class="btn btn-black")}}
                   <a href="{{ url_for('home') }}" class="btn btn-secondary">Back</a>
