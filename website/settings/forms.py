@@ -11,6 +11,11 @@ class add_books_form(FlaskForm):
     book_genre_add = StringField('Book Genre', validators=[DataRequired()])
     submit = SubmitField('Add')
 
+class admin_add_books_form(FlaskForm):
+    admin_book_name_add = StringField('Book Title', validators=[DataRequired()])
+    admin_book_genre_add = StringField('Book Genre', validators=[DataRequired()])
+    submit = SubmitField('Add')
+
 class login_page(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     password = PasswordField("Password", validators=[DataRequired()])

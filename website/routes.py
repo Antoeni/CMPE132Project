@@ -1,6 +1,6 @@
 from datetime import datetime
 from website.settings.roles import User, delete_roles, checkout_books_role, data_book
-from website.settings.forms import login_page, sign_up, delete_user_page, checkout_book_page, add_books_form
+from website.settings.forms import login_page, sign_up, delete_user_page, checkout_book_page, add_books_form, admin_add_books_form
 from website import app, db
 from flask_login import login_user, logout_user, login_required, current_user
 from flask import flash, render_template, redirect
@@ -118,6 +118,17 @@ def add_books_route():
         db.session.commit()
         flash('Book added', 'success')
     return render_template('add_book.html', form=form)
+
+@app.route('/add_booksAdmin/', methods=['GET', 'POST'])
+@login_required
+def add_books_admin():
+    form = admin_add_books_form()
+    if form.validate_on_submit():
+        book = data_book(book_title=form.admin_book_name_add.data, book_genre=form.admin_book_genre_add.data)
+        db.session.add(book)
+        db.session.commit()
+        flash('Book added', 'success')
+    return render_template('add_book_admin.html', form=form)
 
 #this gives the overall routing for when we register
 @app.route('/register/', methods=['POST', 'GET'])
