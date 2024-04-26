@@ -5,12 +5,10 @@ from flask_login import LoginManager
 
 
 app = Flask(__name__)
-#This sets the file path
-pathTodb = os.path.abspath(os.path.dirname(__file__))
 
 app.config.from_mapping(
-    SECRET_KEY = 'secret password',
-    SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(pathTodb, 'website.db'),
+    SECRET_KEY='secret password',
+    SQLALCHEMY_DATABASE_URI='sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'website.db'),
 )
 
 #This will create the data base and login, for when we call routes
